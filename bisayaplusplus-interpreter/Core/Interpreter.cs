@@ -35,35 +35,57 @@ namespace bisayaplusplus_interpreter.Core
             var parts = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             if (parts.Length < 3) throw new Exception("Invalid declaration syntax.");
 
-            string type = parts[1];
-            string varsPart = line.Substring(line.IndexOf(type) + type.Length).Trim();
-            var declarations = varsPart.Split(',');
+            string type = parts[1].Trim();
+            string rest = line.Substring(line.IndexOf(type) + type.Length).Trim();
+
+            // split declarations by comma (simple split is ok for declarations)
+            var declarations = rest.Split(',');
 
             foreach (var d in declarations)
             {
                 var decl = d.Trim();
+                if (decl.Length == 0) continue;
+
                 if (decl.Contains("="))
                 {
-                    var kv = decl.Split('=');
-                    string name = kv[0].Trim();
-                    string value = kv[1].Trim();
-                    vars.Declare(name, value);
+                    int eq = decl.IndexOf('=');
+                    string name = decl.Substring(0, eq).Trim();
+                    string valueToken = decl.Substring(eq + 1).Trim();
+                    // pass raw token — VariableTable will convert it to declared type
+                    vars.Declare(name, type, valueToken);
                 }
                 else
                 {
-                    vars.Declare(decl, null);
+                    string name = decl;
+                    vars.Declare(name, type, null);
                 }
             }
         }
 
         private void HandleAssignment(string line)
         {
-            var parts = line.Split('=');
-            if (parts.Length != 2) throw new Exception("Invalid assignment syntax.");
+            // Split on '=' but only top-level (outside quotes). Use helper.
+            var parts = SplitTopLevel(line, '=');
+            if (parts.Count < 2) throw new Exception("Invalid assignment syntax.");
 
-            string varName = parts[0].Trim();
-            string value = parts[1].Trim();
-            vars.Assign(varName, value);
+            // RHS token is last part
+            string rhsToken = parts[parts.Count - 1].Trim();
+
+            object rhsValue;
+            // If rhsToken is a declared variable, use its value. Otherwise pass the raw token string
+            if (vars.Exists(rhsToken))
+                rhsValue = vars.GetValue(rhsToken);
+            else
+                rhsValue = rhsToken;
+
+            // Assign from right-to-left: for x = y = 4 -> assign y then x (both get evaluated RHS)
+            for (int i = parts.Count - 2; i >= 0; i--)
+            {
+                string varName = parts[i].Trim();
+                if (!vars.Exists(varName))
+                    throw new Exception("Variable '" + varName + "' not declared.");
+                vars.Assign(varName, rhsValue);
+            }
         }
 
         private string HandleOutput(string line)
@@ -72,7 +94,7 @@ namespace bisayaplusplus_interpreter.Core
             if (colonIndex == -1) throw new Exception("Invalid IPAKITA syntax.");
 
             string expr = line.Substring(colonIndex + 1).Trim();
-            var segments = strhelper.SplitExpression(expr);
+            var segments = SplitExpression(expr);
             var result = new StringBuilder();
 
             foreach (string seg in segments)
@@ -83,17 +105,21 @@ namespace bisayaplusplus_interpreter.Core
                     result.Append("\n");
                 else if (s == "[&]")
                     result.Append("&");
+                else if (s == "[]")
+                    result.Append(" ");
                 else if (s.StartsWith("\"") && s.EndsWith("\""))
                     result.Append(s.Substring(1, s.Length - 2));
                 else if (s.StartsWith("'") && s.EndsWith("'"))
                     result.Append(s.Substring(1, s.Length - 2));
                 else if (vars.Exists(s))
-                    result.Append(vars.Get(s));
+                {
+                    var val = vars.GetValue(s);
+                    if (val != null)
+                        result.Append(val.ToString());
+                }
                 else if (s.Length > 0)
                     result.Append(s);
             }
-
-            MessageBox.Show(result.ToString());
 
             return result.ToString();
         }

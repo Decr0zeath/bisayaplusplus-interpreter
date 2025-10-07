@@ -65,5 +65,43 @@ namespace bisayaplusplus_interpreter.Utils
 
             return parts;
         }
+
+        // Generic splitter for a single character delimiter outside of quotes
+        private List<string> SplitTopLevel(string input, char delimiter)
+        {
+            var parts = new List<string>();
+            var current = new StringBuilder();
+            bool inQuotes = false;
+            char quoteChar = '\0';
+
+            for (int i = 0; i < input.Length; i++)
+            {
+                char c = input[i];
+
+                if ((c == '"' || c == '\''))
+                {
+                    if (inQuotes && c == quoteChar)
+                        inQuotes = false;
+                    else if (!inQuotes)
+                    {
+                        inQuotes = true;
+                        quoteChar = c;
+                    }
+                }
+
+                if (c == delimiter && !inQuotes)
+                {
+                    parts.Add(current.ToString());
+                    current.Clear();
+                }
+                else
+                {
+                    current.Append(c);
+                }
+            }
+
+            parts.Add(current.ToString());
+            return parts;
+        }
     }
 }
