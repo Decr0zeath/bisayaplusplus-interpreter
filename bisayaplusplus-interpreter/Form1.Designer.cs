@@ -28,13 +28,57 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.txtboxCode = new System.Windows.Forms.TextBox();
+            this.btnInterpret = new System.Windows.Forms.Button();
+            this.txtboxOutput = new System.Windows.Forms.TextBox();
+            this.SuspendLayout();
+            // 
+            // txtboxCode
+            // 
+            this.txtboxCode.Location = new System.Drawing.Point(21, 55);
+            this.txtboxCode.Multiline = true;
+            this.txtboxCode.Name = "txtboxCode";
+            this.txtboxCode.Size = new System.Drawing.Size(593, 279);
+            this.txtboxCode.TabIndex = 0;
+            // 
+            // btnInterpret
+            // 
+            this.btnInterpret.Location = new System.Drawing.Point(270, 12);
+            this.btnInterpret.Name = "btnInterpret";
+            this.btnInterpret.Size = new System.Drawing.Size(94, 37);
+            this.btnInterpret.TabIndex = 1;
+            this.btnInterpret.Text = "Interpret";
+            this.btnInterpret.UseVisualStyleBackColor = true;
+            this.btnInterpret.Click += new System.EventHandler(this.btnInterpret_Click);
+            // 
+            // txtboxOutput
+            // 
+            this.txtboxOutput.Location = new System.Drawing.Point(21, 340);
+            this.txtboxOutput.Multiline = true;
+            this.txtboxOutput.Name = "txtboxOutput";
+            this.txtboxOutput.Size = new System.Drawing.Size(593, 279);
+            this.txtboxOutput.TabIndex = 2;
+            // 
+            // Form1
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(637, 635);
+            this.Controls.Add(this.txtboxOutput);
+            this.Controls.Add(this.btnInterpret);
+            this.Controls.Add(this.txtboxCode);
+            this.Name = "Form1";
             this.Text = "Form1";
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
         }
 
         #endregion
+
+        private System.Windows.Forms.TextBox txtboxCode;
+        private System.Windows.Forms.Button btnInterpret;
+        private System.Windows.Forms.TextBox txtboxOutput;
     }
 }
 
