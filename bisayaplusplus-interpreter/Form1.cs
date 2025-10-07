@@ -1,14 +1,7 @@
 ﻿using bisayaplusplus_interpreter.Core;
+using bisayaplusplus_interpreter.Utils;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 namespace bisayaplusplus_interpreter
 {
@@ -23,8 +16,10 @@ namespace bisayaplusplus_interpreter
         {
             try
             {
+                var strhelper = new StringHelper();
+
                 var lexer = new Lexer();
-                var tokens = lexer.Tokenize(txtboxCode.Text);
+                var tokens = lexer.Tokenize(strhelper.Clean(txtboxCode.Text));
 
                 var parser = new Parser();
                 parser.ParseStructure(tokens);

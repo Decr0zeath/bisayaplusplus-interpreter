@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace bisayaplusplus_interpreter.Core
 {
@@ -15,10 +16,14 @@ namespace bisayaplusplus_interpreter.Core
             int start = tokens.FindIndex(l => l == "SUGOD");
             int end = tokens.FindIndex(l => l == "KATAPUSAN");
 
-            if (start == -1 || end == -1 || end <= start)
+            if (start == -1 || end == -1 || end <= start) 
                 throw new Exception("Error: Missing or misplaced SUGOD / KATAPUSAN.");
 
             Commands = tokens.Skip(start + 1).Take(end - start - 1).ToList();
+
+            //pang debug rani, delete.a lang after
+            MessageBox.Show(string.Join(Environment.NewLine, Commands), "Parsed Commands");
+
             return true;
         }
     }

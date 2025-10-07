@@ -1,15 +1,17 @@
-﻿using System;
+﻿using bisayaplusplus_interpreter.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace bisayaplusplus_interpreter.Core
 {
     public class Interpreter
     {
         private VariableTable vars = new VariableTable();
-
+        private StringHelper strhelper = new StringHelper();
         public string Execute(List<string> commands)
         {
             var sb = new StringBuilder();
@@ -70,8 +72,7 @@ namespace bisayaplusplus_interpreter.Core
             if (colonIndex == -1) throw new Exception("Invalid IPAKITA syntax.");
 
             string expr = line.Substring(colonIndex + 1).Trim();
-            string[] segments = expr.Split('&');
-
+            var segments = strhelper.SplitExpression(expr);
             var result = new StringBuilder();
 
             foreach (string seg in segments)
@@ -91,6 +92,8 @@ namespace bisayaplusplus_interpreter.Core
                 else if (s.Length > 0)
                     result.Append(s);
             }
+
+            MessageBox.Show(result.ToString());
 
             return result.ToString();
         }
