@@ -28,6 +28,11 @@ namespace bisayaplusplus_interpreter
                 string result = interpreter.Execute(parser.Commands);
 
                 txtboxOutput.Text = result;
+
+                if(result == "")
+                {
+                    txtboxOutput.Text = "Parsed successfully";
+                }
             }
             catch (Exception ex)
             {

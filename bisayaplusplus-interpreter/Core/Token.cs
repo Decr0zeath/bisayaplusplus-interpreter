@@ -9,7 +9,7 @@ namespace bisayaplusplus_interpreter.Core
     public class Token
     {
         public string Value { get; set; }
-        public string Type { get; set; }   // e.g. Keyword, Identifier, Literal
+        public string Type { get; set; }   // Keyword, Identifier, Literal
 
         public Token(string value, string type)
         {

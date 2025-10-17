@@ -67,7 +67,7 @@ namespace bisayaplusplus_interpreter.Utils
         }
 
         // Generic splitter for a single character delimiter outside of quotes
-        private List<string> SplitTopLevel(string input, char delimiter)
+        public List<string> SplitTopLevel(string input, char delimiter)
         {
             var parts = new List<string>();
             var current = new StringBuilder();

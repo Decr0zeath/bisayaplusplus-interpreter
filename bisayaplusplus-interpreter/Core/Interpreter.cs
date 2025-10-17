@@ -65,7 +65,7 @@ namespace bisayaplusplus_interpreter.Core
         private void HandleAssignment(string line)
         {
             // Split on '=' but only top-level (outside quotes). Use helper.
-            var parts = SplitTopLevel(line, '=');
+            var parts = strhelper.SplitTopLevel(line, '=');
             if (parts.Count < 2) throw new Exception("Invalid assignment syntax.");
 
             // RHS token is last part
@@ -94,7 +94,7 @@ namespace bisayaplusplus_interpreter.Core
             if (colonIndex == -1) throw new Exception("Invalid IPAKITA syntax.");
 
             string expr = line.Substring(colonIndex + 1).Trim();
-            var segments = SplitExpression(expr);
+            var segments = strhelper.SplitExpression(expr);
             var result = new StringBuilder();
 
             foreach (string seg in segments)
@@ -105,6 +105,8 @@ namespace bisayaplusplus_interpreter.Core
                     result.Append("\n");
                 else if (s == "[&]")
                     result.Append("&");
+                else if (s == "[-]")
+                    result.Append("-");
                 else if (s == "[]")
                     result.Append(" ");
                 else if (s.StartsWith("\"") && s.EndsWith("\""))

@@ -24,6 +24,8 @@ namespace bisayaplusplus_interpreter.Core
             //pang debug rani, delete.a lang after
             MessageBox.Show(string.Join(Environment.NewLine, Commands), "Parsed Commands");
 
+
+
             return true;
         }
     }

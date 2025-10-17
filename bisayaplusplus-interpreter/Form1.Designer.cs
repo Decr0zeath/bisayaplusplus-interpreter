@@ -30,7 +30,7 @@
         {
             this.txtboxCode = new System.Windows.Forms.TextBox();
             this.btnInterpret = new System.Windows.Forms.Button();
-            this.txtboxOutput = new System.Windows.Forms.TextBox();
+            this.txtboxOutput = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
             // txtboxCode
@@ -53,11 +53,12 @@
             // 
             // txtboxOutput
             // 
-            this.txtboxOutput.Location = new System.Drawing.Point(21, 340);
-            this.txtboxOutput.Multiline = true;
+            this.txtboxOutput.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtboxOutput.Location = new System.Drawing.Point(21, 350);
             this.txtboxOutput.Name = "txtboxOutput";
-            this.txtboxOutput.Size = new System.Drawing.Size(593, 279);
-            this.txtboxOutput.TabIndex = 2;
+            this.txtboxOutput.Size = new System.Drawing.Size(593, 237);
+            this.txtboxOutput.TabIndex = 3;
+            this.txtboxOutput.Text = "";
             // 
             // Form1
             // 
@@ -78,7 +79,7 @@
 
         private System.Windows.Forms.TextBox txtboxCode;
         private System.Windows.Forms.Button btnInterpret;
-        private System.Windows.Forms.TextBox txtboxOutput;
+        private System.Windows.Forms.RichTextBox txtboxOutput;
     }
 }
 
