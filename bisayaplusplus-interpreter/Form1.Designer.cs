@@ -53,7 +53,7 @@
             // 
             // txtboxOutput
             // 
-            this.txtboxOutput.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtboxOutput.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtboxOutput.Location = new System.Drawing.Point(21, 350);
             this.txtboxOutput.Name = "txtboxOutput";
             this.txtboxOutput.Size = new System.Drawing.Size(593, 237);

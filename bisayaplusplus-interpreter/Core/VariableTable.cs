@@ -1,11 +1,12 @@
-﻿using bisayaplusplus_interpreter.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using bisayaplusplus_interpreter.Models;
 
 namespace bisayaplusplus_interpreter.Core
 {
@@ -19,6 +20,13 @@ namespace bisayaplusplus_interpreter.Core
 
             // put if for regular expression   @"^[A-Za-z_][A-Za-z0-9_]*$"
             // if(
+
+            var variableNamePattern = @"^[A-Za-z_][A-Za-z0-9_]*$";
+
+
+            if (!Regex.IsMatch(name, variableNamePattern))
+                throw new Exception("Invalid variable name: '" + name + "'. Variable names must start with a letter or underscore, followed by letters, digits, or underscores.");
+
             if (ReservedWords.Words.Contains(name))
                 throw new Exception("Cannot use reserved words as variable");
 
