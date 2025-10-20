@@ -13,9 +13,9 @@ namespace bisayaplusplus_interpreter.Core
             foreach (var rawLine in lines)
             {
                 var line = rawLine.Trim();
-                if (line.StartsWith("--")) continue;
+                if (line.StartsWith("@@")) continue;
 
-                int commentIndex = line.IndexOf("--");
+                int commentIndex = line.IndexOf("@@");
                 if (commentIndex != -1) line = line.Substring(0, commentIndex).Trim();
 
                 if (!string.IsNullOrWhiteSpace(line)) tokens.Add(line);

@@ -13,16 +13,10 @@ namespace bisayaplusplus_interpreter.Core
     public class VariableTable
     {
         private Dictionary<string, Variable> variables = new Dictionary<string, Variable>(StringComparer.Ordinal);
- 
+
         public void Declare(string name, string type, object initialValue = null)
         {
-            // should not print if no ampersand
-
-            // put if for regular expression   @"^[A-Za-z_][A-Za-z0-9_]*$"
-            // if(
-
             var variableNamePattern = @"^[A-Za-z_][A-Za-z0-9_]*$";
-
 
             if (!Regex.IsMatch(name, variableNamePattern))
                 throw new Exception("Invalid variable name: '" + name + "'. Variable names must start with a letter or underscore, followed by letters, digits, or underscores.");
@@ -34,7 +28,7 @@ namespace bisayaplusplus_interpreter.Core
                 throw new Exception("Variable '" + name + "' already declared.");
 
             object val;
-            
+
             if (initialValue != null) val = ConvertObjectToType(initialValue, type);
             else val = DefaultValueForType(type);
 
@@ -79,7 +73,6 @@ namespace bisayaplusplus_interpreter.Core
         {
             if (value == null) return DefaultValueForType(targetType);
 
-            // If the caller has passed an already-typed object, accept/cast where sensible:
             if (targetType == "NUMERO") return DataTypeNUMERO(value);
             else if (targetType == "TIPIK") return DataTypeTIPIK(value);
             else if (targetType == "LETRA") return DataTypeLETRA(value);
@@ -102,7 +95,6 @@ namespace bisayaplusplus_interpreter.Core
             if (s != null)
             {
                 s = s.Trim();
-                // strip surrounding quotes if present
                 if ((s.StartsWith("\"") && s.EndsWith("\"")) || (s.StartsWith("'") && s.EndsWith("'")))
                     s = s.Substring(1, s.Length - 2);
 
@@ -120,7 +112,6 @@ namespace bisayaplusplus_interpreter.Core
             }
 
             throw new Exception("Cannot convert value to NUMERO.");
-
         }
         private object DataTypeTIPIK(object value)
         {
@@ -159,15 +150,12 @@ namespace bisayaplusplus_interpreter.Core
             }
 
             throw new Exception("Cannot convert value to LETRA.");
-
         }
         private object DataTypeTINUOD(object value)
         {
             if (value is bool) return value;
 
             var s = value as string;
-
-            MessageBox.Show(s.ToString());
             if (s != null)
             {
                 s = s.Trim();
@@ -175,14 +163,11 @@ namespace bisayaplusplus_interpreter.Core
                     s = s.Substring(1, s.Length - 2);
 
                 var up = s.ToUpperInvariant();
-                if (up == "OO" || up == "TRUE") return "OO";
-                if (up == "DILI" || up == "FALSE") return "DILI";
+                if (up == "OO" || up == "TRUE") return true;
+                if (up == "DILI" || up == "FALSE") return false;
             }
 
             throw new Exception("Cannot convert value to TINUOD.");
         }
-
-
-
     }
 }
