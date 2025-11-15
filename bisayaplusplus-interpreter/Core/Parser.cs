@@ -9,6 +9,14 @@ namespace bisayaplusplus_interpreter.Core
 {
     public class Parser
     {
+        private RichTextBox _txtboxparsedComm;
+
+        public Parser(RichTextBox outputBox)
+        {
+            _txtboxparsedComm = outputBox;
+        }
+
+
         public List<string> Commands { get; private set; }
 
         public bool ParseStructure(List<string> tokens)
@@ -28,9 +36,9 @@ namespace bisayaplusplus_interpreter.Core
             Commands = tokens.Skip(start + 1).Take(end - start - 1).ToList();
 
             //pang debug rani, delete.a lang after
-            MessageBox.Show(string.Join(Environment.NewLine, Commands), "Parsed Commands");
+            //MessageBox.Show(string.Join(Environment.NewLine, Commands), "Parsed Commands");
 
-
+            _txtboxparsedComm.Text = string.Join(Environment.NewLine, Commands);
 
             return true;
         }

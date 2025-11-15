@@ -21,7 +21,7 @@ namespace bisayaplusplus_interpreter
                 var lexer = new Lexer();
                 var tokens = lexer.Tokenize(strhelper.Clean(txtboxCode.Text));
 
-                var parser = new Parser();
+                var parser = new Parser(txtboxParsedComm);
                 parser.ParseStructure(tokens);
 
                 var interpreter = new Interpreter();
@@ -35,6 +35,12 @@ namespace bisayaplusplus_interpreter
             {
                 txtboxOutput.Text = "Error: " + ex.Message;
             }
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            txtboxOutput.Text = "";
+            txtboxParsedComm.Text = "";
         }
     }
 }
