@@ -77,6 +77,52 @@ namespace bisayaplusplus_interpreter.Core
             string type = parts[1].Trim();
             string rest = line.Substring(line.IndexOf(type) + type.Length).Trim();
 
+            // split declarations by comma
+            var declarations = rest.Split(',');
+
+            foreach (var d in declarations)
+            {
+                var decl = d.Trim();
+                if (decl.Length == 0) continue;
+
+                if (decl.Contains("="))
+                {
+                    int eq = decl.IndexOf('=');
+                    string name = decl.Substring(0, eq).Trim();
+                    string valueToken = decl.Substring(eq + 1).Trim();
+
+                    // ---------------------------
+                    // *** NEW VALIDATION RULE ***
+                    // ---------------------------
+                    // If type is TINUOD (string), reject bare OO/DILI
+                    string up = valueToken.ToUpperInvariant();
+                    bool isQuoted =
+                        (valueToken.StartsWith("\"") && valueToken.EndsWith("\"")) ||
+                        (valueToken.StartsWith("'") && valueToken.EndsWith("'"));
+
+                    if (type == "TINUOD" && (up == "OO" || up == "DILI") && !isQuoted)
+                        throw new Exception($"String variable '{name}' cannot be assigned boolean literal {valueToken}. Use \"{valueToken}\" instead.");
+
+                    // Now safely evaluate
+                    object valueObj = EvaluateExpressionOrToken(valueToken);
+
+                    vars.Declare(name, type, valueObj);
+                }
+                else
+                {
+                    string name = decl;
+                    vars.Declare(name, type, null);
+                }
+            }
+
+            /* OLD RULE
+            // Example: MUGNA NUMERO x, y, z=5
+            var parts = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length < 3) throw new Exception("Invalid declaration syntax.");
+
+            string type = parts[1].Trim();
+            string rest = line.Substring(line.IndexOf(type) + type.Length).Trim();
+
             // split declarations by comma (simple split is ok for declarations)
             var declarations = rest.Split(',');
 
@@ -99,7 +145,7 @@ namespace bisayaplusplus_interpreter.Core
                     string name = decl;
                     vars.Declare(name, type, null);
                 }
-            }
+            } */
         }
 
         private void HandleAssignment(string line)
@@ -163,7 +209,16 @@ namespace bisayaplusplus_interpreter.Core
                     }
                 }
                 else if (s.Length > 0)
-                    result.Append(s);
+                {
+                    // NEW: evaluate the expression
+                    var val = EvaluateExpressionOrToken(s);
+
+                    if (val is bool)
+                        result.Append((bool)val ? "OO" : "DILI");
+                    else
+                        result.Append(val?.ToString());
+                }
+                   // result.Append(s);
             }
 
             return result.ToString();
