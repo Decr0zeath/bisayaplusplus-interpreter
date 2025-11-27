@@ -185,27 +185,19 @@ namespace bisayaplusplus_interpreter.Core
             {
                 string s = seg.Trim();
 
-                if (s == "$")
-                    result.Append("\n");
-                else if (s == "[&]")
-                    result.Append("&");
-                else if (s == "[-]")
-                    result.Append("-");
-                else if (s == "[]")
-                    result.Append(" ");
-                else if (s.StartsWith("\"") && s.EndsWith("\""))
-                    result.Append(s.Substring(1, s.Length - 2));
-                else if (s.StartsWith("'") && s.EndsWith("'"))
-                    result.Append(s.Substring(1, s.Length - 2));
+                if (s == "$") result.Append("\n");
+                else if (s == "[&]") result.Append("&");
+                else if (s == "[-]") result.Append("-");
+                else if (s == "[]") result.Append(" ");
+                else if (s.StartsWith("\"") && s.EndsWith("\"")) result.Append(s.Substring(1, s.Length - 2));
+                else if (s.StartsWith("'") && s.EndsWith("'")) result.Append(s.Substring(1, s.Length - 2));
                 else if (vars.Exists(s))
                 {
                     var val = vars.GetValue(s);
                     if (val != null)
                     {
-                        if (val is bool)
-                            result.Append((bool)val ? "OO" : "DILI");
-                        else
-                            result.Append(val.ToString());
+                        if (val is bool) result.Append((bool)val ? "OO" : "DILI");
+                        else result.Append(val.ToString());
                     }
                 }
                 else if (s.Length > 0)
@@ -213,10 +205,8 @@ namespace bisayaplusplus_interpreter.Core
                     // NEW: evaluate the expression
                     var val = EvaluateExpressionOrToken(s);
 
-                    if (val is bool)
-                        result.Append((bool)val ? "OO" : "DILI");
-                    else
-                        result.Append(val?.ToString());
+                    if (val is bool) result.Append((bool)val ? "OO" : "DILI");
+                    else result.Append(val?.ToString());
                 }
                    // result.Append(s);
             }

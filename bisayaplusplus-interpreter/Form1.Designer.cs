@@ -43,7 +43,7 @@
             this.txtboxCode.Location = new System.Drawing.Point(21, 55);
             this.txtboxCode.Multiline = true;
             this.txtboxCode.Name = "txtboxCode";
-            this.txtboxCode.Size = new System.Drawing.Size(593, 279);
+            this.txtboxCode.Size = new System.Drawing.Size(593, 741);
             this.txtboxCode.TabIndex = 0;
             // 
             // btnInterpret
@@ -59,7 +59,7 @@
             // txtboxOutput
             // 
             this.txtboxOutput.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtboxOutput.Location = new System.Drawing.Point(21, 671);
+            this.txtboxOutput.Location = new System.Drawing.Point(691, 559);
             this.txtboxOutput.Name = "txtboxOutput";
             this.txtboxOutput.Size = new System.Drawing.Size(593, 237);
             this.txtboxOutput.TabIndex = 3;
@@ -68,7 +68,7 @@
             // txtboxParsedComm
             // 
             this.txtboxParsedComm.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtboxParsedComm.Location = new System.Drawing.Point(21, 386);
+            this.txtboxParsedComm.Location = new System.Drawing.Point(691, 79);
             this.txtboxParsedComm.Name = "txtboxParsedComm";
             this.txtboxParsedComm.Size = new System.Drawing.Size(593, 237);
             this.txtboxParsedComm.TabIndex = 4;
@@ -78,7 +78,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(16, 358);
+            this.label1.Location = new System.Drawing.Point(686, 51);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(195, 25);
             this.label1.TabIndex = 5;
@@ -98,7 +98,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(16, 643);
+            this.label2.Location = new System.Drawing.Point(720, 501);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(77, 25);
             this.label2.TabIndex = 7;
@@ -108,7 +108,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(637, 930);
+            this.ClientSize = new System.Drawing.Size(1418, 930);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.btnClear);
             this.Controls.Add(this.label1);
