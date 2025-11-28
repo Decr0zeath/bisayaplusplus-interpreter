@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace bisayaplusplus_interpreter.Core
@@ -34,9 +32,6 @@ namespace bisayaplusplus_interpreter.Core
                 throw new Exception("Error: Missing or misplaced SUGOD / KATAPUSAN.");
 
             Commands = tokens.Skip(start + 1).Take(end - start - 1).ToList();
-
-            //pang debug rani, delete.a lang after
-            //MessageBox.Show(string.Join(Environment.NewLine, Commands), "Parsed Commands");
 
             _txtboxparsedComm.Text = string.Join(Environment.NewLine, Commands);
 
