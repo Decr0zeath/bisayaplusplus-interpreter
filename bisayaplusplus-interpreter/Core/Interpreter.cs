@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -22,6 +23,7 @@ namespace bisayaplusplus_interpreter.Core
             for (int i = 0; i < commands.Count; i++)
             {
                 string line = commands[i].Trim();
+                MessageBox.Show(commands[i]);
 
                 if (line.StartsWith("MUGNA"))
                 {
@@ -280,16 +282,19 @@ namespace bisayaplusplus_interpreter.Core
             throw new Exception("Missing closing '}' for block starting at " + startIndex);
         }
 
+        private bool SkipEntireIfChain(List<string> commands, int index)
+        {
+            return (index < commands.Count && (commands[index].StartsWith("KUNG DILI") || commands[index].StartsWith("KUNG WALA")));
+        }
+
+
         private int HandleIf(List<string> commands, int idx, StringBuilder sb)
         {
             // line is like: KUNG (<expr>) or KUNG (<expr>)   (there could be spaces)
             string line = commands[idx].Trim();
             // extract expression inside parentheses
-            MessageBox.Show(line); ////tests
             int p1 = line.IndexOf('(');
             int p2 = line.LastIndexOf(')');
-
-            MessageBox.Show(p1.ToString() + " " + p2.ToString()); ////tests
 
             if (p1 == -1 || p2 == -1 || p2 <= p1) throw new Exception("Invalid KUNG syntax.");
             string condExpr = line.Substring(p1 + 1, p2 - p1 - 1).Trim();
@@ -302,15 +307,28 @@ namespace bisayaplusplus_interpreter.Core
 
             int blockEnd = FindMatchingBlockEnd(commands, blockStart);
 
+            MessageBox.Show(condExpr);
+
             bool cond = EvaluateBooleanExpression(condExpr);
+
+            
 
             if (cond)
             {
                 // execute block commands between blockStart+1 .. blockEnd-1
                 ExecuteBlock(commands.Skip(blockStart + 1).Take(blockEnd - blockStart - 1).ToList(), sb);
                 // return index after blockEnd
-                MessageBox.Show("blockEnd: " + blockEnd.ToString()); ////tests
-                return blockEnd;
+                //return blockEnd;
+                blockEnd++;
+                //(blockEnd < commands.Count && (commands[blockEnd].StartsWith("KUNG DILI") || commands[blockEnd].StartsWith("KUNG WALA")))
+                if (blockEnd < commands.Count && commands[blockEnd].StartsWith("KUNG WALA"))
+                {
+                    return FindMatchingBlockEnd(commands, blockEnd + 1);
+                }
+                else
+                {
+                    return blockEnd;
+                }
             }
             else
             {
