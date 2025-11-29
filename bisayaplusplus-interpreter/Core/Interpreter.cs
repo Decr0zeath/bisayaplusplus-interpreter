@@ -23,7 +23,7 @@ namespace bisayaplusplus_interpreter.Core
             for (int i = 0; i < commands.Count; i++)
             {
                 string line = commands[i].Trim();
-                MessageBox.Show(commands[i]);
+                MessageBox.Show("Main Execute: " + commands[i]);
 
                 if (line.StartsWith("MUGNA"))
                 {
@@ -116,38 +116,6 @@ namespace bisayaplusplus_interpreter.Core
                     vars.Declare(name, type, null);
                 }
             }
-
-            /* OLD RULE
-            // Example: MUGNA NUMERO x, y, z=5
-            var parts = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            if (parts.Length < 3) throw new Exception("Invalid declaration syntax.");
-
-            string type = parts[1].Trim();
-            string rest = line.Substring(line.IndexOf(type) + type.Length).Trim();
-
-            // split declarations by comma (simple split is ok for declarations)
-            var declarations = rest.Split(',');
-
-            foreach (var d in declarations)
-            {
-                var decl = d.Trim();
-                if (decl.Length == 0) continue;
-
-                if (decl.Contains("="))
-                {
-                    int eq = decl.IndexOf('=');
-                    string name = decl.Substring(0, eq).Trim();
-                    string valueToken = decl.Substring(eq + 1).Trim();
-                    // For initial value evaluate expression if necessary
-                    object valueObj = EvaluateExpressionOrToken(valueToken);
-                    vars.Declare(name, type, valueObj);
-                }
-                else
-                {
-                    string name = decl;
-                    vars.Declare(name, type, null);
-                }
-            } */
         }
 
         private void HandleAssignment(string line)
@@ -277,7 +245,12 @@ namespace bisayaplusplus_interpreter.Core
                 string l = commands[i];
                 if (l.Contains("PUNDOK{")) depth++;
                 if (l.Trim() == "}") depth--;
-                if (depth == 0) return i;
+                if (depth == 0)
+                {
+                    MessageBox.Show("return i block" + i.ToString());
+                    if (i > commands.Count) return commands.Count;
+                    else return i;
+                }
             }
             throw new Exception("Missing closing '}' for block starting at " + startIndex);
         }
@@ -287,8 +260,7 @@ namespace bisayaplusplus_interpreter.Core
             return (index < commands.Count && (commands[index].StartsWith("KUNG DILI") || commands[index].StartsWith("KUNG WALA")));
         }
 
-
-        private int HandleIf(List<string> commands, int idx, StringBuilder sb)
+        public int HandleIf(List<string> commands, int idx, StringBuilder sb)
         {
             // line is like: KUNG (<expr>) or KUNG (<expr>)   (there could be spaces)
             string line = commands[idx].Trim();
@@ -307,11 +279,7 @@ namespace bisayaplusplus_interpreter.Core
 
             int blockEnd = FindMatchingBlockEnd(commands, blockStart);
 
-            MessageBox.Show(condExpr);
-
             bool cond = EvaluateBooleanExpression(condExpr);
-
-            
 
             if (cond)
             {
@@ -332,9 +300,13 @@ namespace bisayaplusplus_interpreter.Core
             }
             else
             {
+                
+
                 // skip this block; check for KUNG DILI (else if) or KUNG WALA (else)
                 int nextIdx = blockEnd + 1;
                 // check for KUNG DILI (<expr>) PUNDOK{...}
+                MessageBox.Show(commands[nextIdx]);
+
                 if (nextIdx < commands.Count && commands[nextIdx].StartsWith("KUNG DILI"))
                 {
                     // format: KUNG DILI (<expr>)
@@ -367,6 +339,15 @@ namespace bisayaplusplus_interpreter.Core
                         }
                         return blockEnd2;
                     }
+
+                    MessageBox.Show("After KUNG DILI blockEnd2: " + commands[blockEnd2 + 1]);
+                    MessageBox.Show((blockEnd2 < commands.Count && commands[blockEnd2 + 1].StartsWith("KUNG WALA")).ToString());
+                    if (blockEnd2 < commands.Count && commands[blockEnd2 + 1].StartsWith("KUNG WALA"))
+                    {
+                        MessageBox.Show("this is the return : " + commands[FindMatchingBlockEnd(commands, blockEnd2 + 2)]);
+                        return FindMatchingBlockEnd(commands, blockEnd2 + 2);
+                    }
+         
                     return blockEnd2;
                 }
 
@@ -379,6 +360,7 @@ namespace bisayaplusplus_interpreter.Core
                     ExecuteBlock(commands.Skip(blockStart3 + 1).Take(blockEnd3 - blockStart3 - 1).ToList(), sb);
                     return blockEnd3;
                 }
+
 
                 return blockEnd;
             }
@@ -452,8 +434,8 @@ namespace bisayaplusplus_interpreter.Core
         private void ExecuteBlock(List<string> blockCommands, StringBuilder sb)
         {
             // very simple: create a nested interpreter that shares same vars and strhelper
-            var nested = new InterpreterBlockRunner(vars, strhelper);
-            nested.Run(blockCommands, sb);
+            var nested = new InterpreterBlockRunner(vars, strhelper, this);
+            nested.Run(blockCommands, sb, this);
         }
 
         // ----------------------------
@@ -1015,17 +997,19 @@ namespace bisayaplusplus_interpreter.Core
     {
         private VariableTable vars;
         private StringHelper strhelper;
+        private Interpreter intprt;
 
-        public InterpreterBlockRunner(VariableTable varsRef, StringHelper sh)
+        public InterpreterBlockRunner(VariableTable varsRef, StringHelper sh, Interpreter intprtRef)
         {
             vars = varsRef;
             strhelper = sh;
+            intprt = intprtRef;
         }
 
         // Runs commands in block; uses same logic as outer Interpreter but simplified: we create a lightweight executor
-        public void Run(List<string> commands, StringBuilder sb)
+        public void Run(List<string> commands, StringBuilder sb, Interpreter intprt)
         {
-            var interpreter = new BlockExecutor(vars, strhelper, sb);
+            var interpreter = new BlockExecutor(vars, strhelper, sb, intprt);
             interpreter.ExecuteBlock(commands);
         }
     }
@@ -1035,18 +1019,20 @@ namespace bisayaplusplus_interpreter.Core
         private VariableTable vars;
         private StringHelper strhelper;
         private StringBuilder sb;
+        private Interpreter intprt;
 
-        public BlockExecutor(VariableTable varsRef, StringHelper sh, StringBuilder sbRef)
+        public BlockExecutor(VariableTable varsRef, StringHelper sh, StringBuilder sbRef, Interpreter intprtRef)
         {
             vars = varsRef;
             strhelper = sh;
             sb = sbRef;
+            intprt = intprtRef;
         }
 
         public void ExecuteBlock(List<string> commands)
         {
             // reuse many methods by creating a small interpreter-like instance — but for brevity call the main Interpreter logic through reflection-like reimplementation
-            var interpreter = new InterpreterExecutionHelper(vars, strhelper, sb);
+            var interpreter = new InterpreterExecutionHelper(vars, strhelper, sb, intprt);
             interpreter.ExecuteList(commands);
         }
     }
@@ -1057,12 +1043,14 @@ namespace bisayaplusplus_interpreter.Core
         private VariableTable vars;
         private StringHelper strhelper;
         private StringBuilder sb;
+        private Interpreter intprt;
 
-        public InterpreterExecutionHelper(VariableTable varsRef, StringHelper sh, StringBuilder sbRef)
+        public InterpreterExecutionHelper(VariableTable varsRef, StringHelper sh, StringBuilder sbRef, Interpreter intprtRef)
         {
             vars = varsRef;
             strhelper = sh;
             sb = sbRef;
+            intprt = intprtRef;
         }
 
         public void ExecuteList(List<string> commands)
@@ -1147,6 +1135,10 @@ namespace bisayaplusplus_interpreter.Core
                         object valueObj = inputs[i];
                         vars.Assign(varName, valueObj);
                     }
+                }
+                else if (l.Contains("KUNG"))
+                {
+                    intprt.HandleIf(commands, 0, sb);
                 }
                 else if (l.Contains("="))
                 {
