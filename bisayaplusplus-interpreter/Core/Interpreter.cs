@@ -23,7 +23,7 @@ namespace bisayaplusplus_interpreter.Core
             for (int i = 0; i < commands.Count; i++)
             {
                 string line = commands[i].Trim();
-                MessageBox.Show("Main Execute: " + commands[i]);
+                MessageBox.Show("Main Execute: " + commands[i] + "---Index: " + i.ToString());
 
                 if (line.StartsWith("MUGNA"))
                 {
@@ -305,7 +305,6 @@ namespace bisayaplusplus_interpreter.Core
                 // skip this block; check for KUNG DILI (else if) or KUNG WALA (else)
                 int nextIdx = blockEnd + 1;
                 // check for KUNG DILI (<expr>) PUNDOK{...}
-                MessageBox.Show(commands[nextIdx]);
 
                 if (nextIdx < commands.Count && commands[nextIdx].StartsWith("KUNG DILI"))
                 {
@@ -340,11 +339,8 @@ namespace bisayaplusplus_interpreter.Core
                         return blockEnd2;
                     }
 
-                    MessageBox.Show("After KUNG DILI blockEnd2: " + commands[blockEnd2 + 1]);
-                    MessageBox.Show((blockEnd2 < commands.Count && commands[blockEnd2 + 1].StartsWith("KUNG WALA")).ToString());
                     if (blockEnd2 < commands.Count && commands[blockEnd2 + 1].StartsWith("KUNG WALA"))
                     {
-                        MessageBox.Show("this is the return : " + commands[FindMatchingBlockEnd(commands, blockEnd2 + 2)]);
                         return FindMatchingBlockEnd(commands, blockEnd2 + 2);
                     }
          
